@@ -1,0 +1,50 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "flow-iq-app",
+          "appId": "1:611364105058:android:a57cfb3f97ceafad321a3b",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "flow-iq-app",
+          "appId": "1:611364105058:ios:d86227ca33787cef321a3b",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "macos": {
+        "default": {
+          "projectId": "flow-iq-app",
+          "appId": "1:611364105058:ios:d86227ca33787cef321a3b",
+          "uploadDebugSymbols": false,
+          "fileOutput": "macos/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "flow-iq-app",
+          "configurations": {
+            "android": "1:611364105058:android:a57cfb3f97ceafad321a3b",
+            "ios": "1:611364105058:ios:d86227ca33787cef321a3b",
+            "macos": "1:611364105058:ios:d86227ca33787cef321a3b",
+            "web": "1:611364105058:web:dbdab29d0bcf7973321a3b",
+            "windows": "1:611364105058:web:17ae9ed6eac8b966321a3b"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "database": "(default)",
+    "location": "eur3",
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "storage": {
+    "rules": "storage.rules"
+  }
+}
