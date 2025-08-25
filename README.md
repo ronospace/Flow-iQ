@@ -28,8 +28,8 @@ An intelligent Flutter app for advanced mood and wellness analytics with AI-powe
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Flutter SDK (>=3.8.1)
-- Dart SDK (>=3.8.1)
+- Flutter SDK (>=3.24.5)
+- Dart SDK (>=3.5.4)
 - Firebase CLI
 - Xcode (for iOS/macOS development)
 - Android Studio (for Android development)
