@@ -2,10 +2,68 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../providers/user_provider.dart';
+import '../services/auth_state_notifier.dart';
 import '../theme/app_theme.dart';
 
-class WelcomeTestScreen extends StatelessWidget {
+class WelcomeTestScreen extends StatefulWidget {
   const WelcomeTestScreen({super.key});
+
+  @override
+  State<WelcomeTestScreen> createState() => _WelcomeTestScreenState();
+}
+
+class _WelcomeTestScreenState extends State<WelcomeTestScreen> {
+  bool _isCreatingTestAccount = false;
+  
+  Future<void> _createTestAccount() async {
+    setState(() => _isCreatingTestAccount = true);
+    
+    try {
+      // Create test user data
+      final testUserData = {
+        'uid': 'test_${DateTime.now().millisecondsSinceEpoch}',
+        'email': 'demo@flowiq.app',
+        'displayName': 'Demo User',
+        'created': DateTime.now().toIso8601String(),
+        'isTestAccount': true,
+        'authProvider': 'test',
+      };
+      
+      // Initialize user provider with test account
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      await userProvider.initializeTestUser('Demo User');
+      
+      // Update auth state notifier
+      final authState = Provider.of<AuthStateNotifier>(context, listen: false);
+      await authState.setTestAccount(testUserData);
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('✅ Demo account ready! Welcome to Flow-iQ'),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        // Navigate to home
+        context.go('/home');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('❌ Demo account creation failed: ${e.toString()}'),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isCreatingTestAccount = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,6 +174,54 @@ class WelcomeTestScreen extends StatelessWidget {
                   // Action Buttons
                   Column(
                     children: [
+                      // Demo Account Button (Primary)
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _isCreatingTestAccount ? null : _createTestAccount,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green.shade600,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 18),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 5,
+                          ),
+                          child: _isCreatingTestAccount
+                              ? const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2,
+                                      ),
+                                    ),
+                                    SizedBox(width: 12),
+                                    Text('Creating Demo Account...',
+                                        style: TextStyle(fontSize: 16)),
+                                  ],
+                                )
+                              : const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.rocket_launch, size: 24),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      '🚀 Try Demo Account',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -129,7 +235,7 @@ class WelcomeTestScreen extends StatelessWidget {
                             ),
                           ),
                           child: const Text(
-                            'Test Signup Flow',
+                            'Create Real Account',
                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                         ),
@@ -147,7 +253,7 @@ class WelcomeTestScreen extends StatelessWidget {
                             ),
                           ),
                           child: Text(
-                            'Test Login Flow',
+                            'Sign In',
                             style: TextStyle(
                               color: AppTheme.primaryPink,
                               fontSize: 16,

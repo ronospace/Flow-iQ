@@ -64,10 +64,15 @@ class AppRouter {
         ),
       ),
       redirect: (context, state) {
+        // Wait for auth state to initialize
+        if (!authState.initialized) {
+          return '/splash';
+        }
+        
         final isLoggedIn = authState.isLoggedIn;
         final location = state.uri.toString();
 
-        // Allow test and splash screens to show without redirect
+        // Allow splash and welcome-test screens to show without redirect
         if (location == '/splash' || location == '/welcome-test') {
           return null;
         }
@@ -79,14 +84,17 @@ class AppRouter {
 
         final loggingIn = location == '/login' || location == '/signup';
 
+        // If not logged in, redirect to signup/login unless already there
         if (!isLoggedIn) {
-          return loggingIn ? null : '/login';
+          return loggingIn ? null : '/signup';
         }
 
+        // If logged in but trying to access login/signup, redirect to home
         if (isLoggedIn && loggingIn) {
           return '/home';
         }
 
+        // Allow all other routes for logged in users
         return null;
       },
       routes: [

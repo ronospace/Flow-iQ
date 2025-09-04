@@ -6,6 +6,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../widgets/app_logo.dart';
 import '../services/user_profile_service.dart';
 import '../providers/user_provider.dart';
+import '../services/auth_state_notifier.dart';
 import '../theme/app_theme.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -100,20 +101,46 @@ class _SignUpScreenState extends State<SignUpScreen> with TickerProviderStateMix
     });
     
     try {
+      // Get user input or use defaults
+      final userName = _nameController.text.trim().isEmpty 
+          ? 'Test User' 
+          : _nameController.text.trim();
+      final userEmail = _emailController.text.trim().isEmpty 
+          ? 'test@flowiq.com' 
+          : _emailController.text.trim();
+          
+      // Create test user data
+      final testUserData = {
+        'uid': 'test_${DateTime.now().millisecondsSinceEpoch}',
+        'email': userEmail,
+        'displayName': userName,
+        'created': DateTime.now().toIso8601String(),
+        'isTestAccount': true,
+        'authProvider': 'test',
+      };
+      
+      // Initialize user provider with test account
       final userProvider = Provider.of<UserProvider>(context, listen: false);
-      await userProvider.initializeTestUser('Ronos');
+      await userProvider.initializeTestUser(userName);
+      
+      // Update auth state notifier
+      final authState = Provider.of<AuthStateNotifier>(context, listen: false);
+      await authState.setTestAccount(testUserData);
       
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('✅ Welcome! Test account created successfully'),
+          SnackBar(
+            content: Text('✅ Welcome $userName! Test account ready'),
             backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
           ),
         );
+        // Navigate to home - router will handle the redirect properly
         context.go('/home');
       }
     } catch (e) {
-      setState(() => _error = 'Test user creation failed: ${e.toString()}');
+      setState(() => _error = 'Test account creation failed: ${e.toString()}');
+      debugPrint('❌ Test account creation error: $e');
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
