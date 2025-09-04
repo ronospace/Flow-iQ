@@ -300,7 +300,7 @@ class _HealthcareProviderDialogState extends State<_HealthcareProviderDialog> {
                       const SizedBox(height: 16),
 
                       DropdownButtonFormField<String>(
-                        value: _selectedDuration,
+                        initialValue: _selectedDuration,
                         decoration: const InputDecoration(
                           labelText: 'Access Duration',
                           border: OutlineInputBorder(),
@@ -671,7 +671,7 @@ class _ProviderAccessDialogState extends State<_ProviderAccessDialog> {
                           const SizedBox(height: 16),
 
                           DropdownButtonFormField<String>(
-                            value: _accessType,
+                            initialValue: _accessType,
                             decoration: const InputDecoration(
                               labelText: 'Access Level',
                               border: OutlineInputBorder(),

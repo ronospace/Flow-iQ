@@ -4,6 +4,103 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  try {
+    // Initialize Firebase only
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    print('✅ Firebase initialized successfully');
+    
+    runApp(SimpleTestApp());
+  } catch (error, stackTrace) {
+    print('❌ Error during startup: $error');
+    print('Stack trace: $stackTrace');
+    
+    // Run minimal error app
+    runApp(MinimalErrorApp());
+  }
+}
+
+class SimpleTestApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flow iQ - Test',
+      theme: ThemeData(
+        primarySwatch: Colors.pink,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: TestScreen(),
+    );
+  }
+}
+
+class TestScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Flow iQ - Test'),
+        backgroundColor: Colors.pink,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.check_circle, size: 80, color: Colors.green),
+            SizedBox(height: 20),
+            Text(
+              'App Started Successfully!',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Firebase is working',
+              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MinimalErrorApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flow iQ - Error',
+      home: Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.error, size: 80, color: Colors.red),
+              SizedBox(height: 20),
+              Text(
+                'Startup Error',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.red),
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Check console for details',
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
   try {
     await Firebase.initializeApp(

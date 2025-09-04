@@ -206,7 +206,7 @@ class _ShareDataDialogState extends State<ShareDataDialog> {
             const SizedBox(height: 16),
 
             DropdownButtonFormField<ProviderType>(
-              value: _selectedProviderType,
+              initialValue: _selectedProviderType,
               decoration: const InputDecoration(
                 labelText: 'Provider Type *',
                 border: OutlineInputBorder(),

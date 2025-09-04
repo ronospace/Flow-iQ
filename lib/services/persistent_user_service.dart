@@ -41,9 +41,24 @@ class PersistentUserService {
       // Load cached user profile if available
       await _loadCachedUserProfile();
 
-      // If user is signed in, sync with cloud
+      // If user is signed in, try to sync with cloud but don't fail on errors
       if (_auth.currentUser != null) {
-        await _syncUserData();
+        try {
+          // Only sync if we don't have a cached profile or it's old
+          final lastSyncStr = _prefs?.getString(_lastSyncKey);
+          final shouldSync = _cachedUserProfile == null || 
+              lastSyncStr == null ||
+              DateTime.now().difference(DateTime.parse(lastSyncStr)).inHours > 1;
+              
+          if (shouldSync) {
+            await _syncUserData();
+          } else {
+            debugPrint('ℹ️ Using cached user profile, sync skipped');
+          }
+        } catch (syncError) {
+          debugPrint('⚠️ Cloud sync failed during initialization, using cached data: $syncError');
+          // Don't fail initialization due to cloud sync issues
+        }
       }
 
       _initialized = true;
@@ -53,8 +68,10 @@ class PersistentUserService {
         e,
         stackTrace: stackTrace,
         context: 'PersistentUserService.initialize',
-        severity: ErrorSeverity.fatal,
+        severity: ErrorSeverity.warning,
       );
+      // Mark as initialized even on error so app can continue
+      _initialized = true;
     }
   }
 
@@ -73,10 +90,16 @@ class PersistentUserService {
       return _cachedUserProfile;
     }
 
-    // Try to load from Firestore if user is signed in
+    // Try to load from Firestore if user is signed in, but don't fail on errors
     final currentUser = _auth.currentUser;
     if (currentUser != null) {
-      return await getUserProfileFromCloud(currentUser.uid);
+      try {
+        return await getUserProfileFromCloud(currentUser.uid);
+      } catch (e) {
+        debugPrint('⚠️ Failed to load profile from cloud, will use defaults: $e');
+        // Return null so calling code can handle gracefully
+        return null;
+      }
     }
 
     return null;
@@ -476,6 +499,12 @@ class PersistentUserService {
 
   Future<void> _saveToCloudStorage(UserProfile userProfile) async {
     try {
+      // Skip cloud storage for test accounts
+      if (userProfile.authProvider == 'test' || userProfile.uid.startsWith('test_')) {
+        debugPrint('🧪 Skipping cloud storage for test account: ${userProfile.uid}');
+        return;
+      }
+      
       await _firestore
           .collection('users')
           .doc(userProfile.uid)
@@ -485,9 +514,10 @@ class PersistentUserService {
         e,
         stackTrace: stackTrace,
         context: 'PersistentUserService._saveToCloudStorage',
-        severity: ErrorSeverity.fatal,
+        severity: ErrorSeverity.warning, // Changed from fatal to warning
       );
       // Don't rethrow - local storage is still successful
+      debugPrint('⚠️ Cloud storage failed, continuing with local storage only');
     }
   }
 

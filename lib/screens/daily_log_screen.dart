@@ -70,7 +70,7 @@ class _DailyLogScreenState extends State<DailyLogScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              l10n.failedToLoadLogs(e.toString()) ?? 'Failed to load logs: $e',
+              l10n.failedToLoadLogs(e.toString()),
             ),
             backgroundColor: Colors.red,
           ),
@@ -94,7 +94,7 @@ class _DailyLogScreenState extends State<DailyLogScreen>
                 color: Theme.of(context).colorScheme.primary,
               ),
               title: Text(
-                AppLocalizations.of(context).selectedDate ?? 'Selected Date',
+                AppLocalizations.of(context).selectedDate,
               ),
               subtitle: Text(DateFormat.yMMMEd().format(_selectedDate)),
               trailing: Icon(
@@ -146,16 +146,14 @@ class _DailyLogScreenState extends State<DailyLogScreen>
             ),
             const SizedBox(height: 16),
             Text(
-              AppLocalizations.of(context).noDailyLogsYet ??
-                  'No daily logs yet',
+              AppLocalizations.of(context).noDailyLogsYet,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              AppLocalizations.of(context).startLoggingDailyMood ??
-                  'Start logging your daily mood and energy',
+              AppLocalizations.of(context).startLoggingDailyMood,
               style: TextStyle(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
@@ -164,7 +162,7 @@ class _DailyLogScreenState extends State<DailyLogScreen>
             ElevatedButton.icon(
               onPressed: () => _tabController.animateTo(0),
               icon: const Icon(Icons.add),
-              label: Text(AppLocalizations.of(context).logToday ?? 'Log Today'),
+              label: Text(AppLocalizations.of(context).logToday),
             ),
           ],
         ),
@@ -226,7 +224,7 @@ class _DailyLogScreenState extends State<DailyLogScreen>
                   const SizedBox(width: 8),
                   Expanded(
                     child: _buildMetricChip(
-                      AppLocalizations.of(context).energy ?? 'Energy',
+                      AppLocalizations.of(context).energy,
                       log.energyDescription,
                       Icons.battery_charging_full,
                       log.energyColor,
@@ -237,7 +235,7 @@ class _DailyLogScreenState extends State<DailyLogScreen>
                   const SizedBox(width: 8),
                   Expanded(
                     child: _buildMetricChip(
-                      AppLocalizations.of(context).painLevel ?? 'Pain',
+                      AppLocalizations.of(context).painLevel,
                       log.painDescription,
                       Icons.healing,
                       log.painColor,
@@ -251,7 +249,7 @@ class _DailyLogScreenState extends State<DailyLogScreen>
             if (log.symptoms.isNotEmpty) ...[
               const SizedBox(height: 12),
               Text(
-                AppLocalizations.of(context).symptoms ?? 'Symptoms',
+                AppLocalizations.of(context).symptoms,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: Theme.of(context).colorScheme.onSurface,
@@ -341,7 +339,7 @@ class _DailyLogScreenState extends State<DailyLogScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      AppLocalizations.of(context).notes ?? 'Notes',
+                      AppLocalizations.of(context).notes,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         color: Theme.of(context).colorScheme.onSurface,
@@ -425,7 +423,7 @@ class _DailyLogScreenState extends State<DailyLogScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '📝 ${AppLocalizations.of(context).dailyLogTitle ?? 'Daily Log'}',
+          '📝 ${AppLocalizations.of(context).dailyLogTitle}',
         ),
         backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
         foregroundColor: Theme.of(context).colorScheme.onSurface,
@@ -447,11 +445,11 @@ class _DailyLogScreenState extends State<DailyLogScreen>
           tabs: [
             Tab(
               icon: Icon(Icons.add_circle_outline),
-              text: AppLocalizations.of(context).logToday ?? 'Log Today',
+              text: AppLocalizations.of(context).logToday,
             ),
             Tab(
               icon: Icon(Icons.history),
-              text: AppLocalizations.of(context).history ?? 'History',
+              text: AppLocalizations.of(context).history,
             ),
           ],
         ),

@@ -27,14 +27,17 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    debugPrint('✅ Firebase initialized successfully');
 
     // Initialize performance optimizations
     await PerformanceService.initialize();
 
-    // Initialize AdMob (Google Mobile Ads)
+    // Initialize AdMob (Google Mobile Ads) - with crash protection
     try {
       await MobileAds.instance.initialize();
+      debugPrint('✅ MobileAds initialized successfully');
     } catch (e, st) {
+      debugPrint('⚠️ MobileAds initialization failed: $e');
       ErrorService.logError(e, stackTrace: st, context: 'MobileAds.initialize');
     }
 
@@ -81,6 +84,7 @@ void main() async {
     );
   } catch (error, stackTrace) {
     // Log startup error
+    debugPrint('❌ App startup failed: $error');
     ErrorService.logError(
       error,
       stackTrace: stackTrace,
@@ -175,6 +179,7 @@ class MyApp extends StatelessWidget {
               return _getBestFallbackLocale(locale.languageCode) ??
                   const Locale('en', 'US');
             },
+            debugShowCheckedModeBanner: false,
           );
         },
       ),
@@ -220,7 +225,6 @@ Locale? _getBestFallbackLocale(String languageCode) {
   return fallbackMap[languageCode];
 }
 
-/// Fallback app shown when startup fails
 class ErrorApp extends StatelessWidget {
   const ErrorApp({super.key});
 
@@ -228,52 +232,95 @@ class ErrorApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flow iQ - Error',
-      theme: ThemeData.light(),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+        useMaterial3: true,
+      ),
       home: Scaffold(
-        backgroundColor: Colors.red.shade50,
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.error_outline, size: 80, color: Colors.red.shade400),
-                const SizedBox(height: 24),
-                Text(
-                  'Startup Error',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red.shade700,
-                  ),
+        appBar: AppBar(
+          title: const Text('Flow iQ - Error'),
+          backgroundColor: Colors.red,
+          foregroundColor: Colors.white,
+        ),
+        body: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 100,
+                color: Colors.red,
+              ),
+              SizedBox(height: 24),
+              Text(
+                'Startup Error',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red,
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  'Flow iQ encountered an error during startup. Please restart the app.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16, color: Colors.red.shade600),
-                ),
-                const SizedBox(height: 32),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    // In a real app, you might restart or show recovery options
-                  },
-                  icon: const Icon(Icons.refresh),
-                  label: const Text('Restart App'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+              SizedBox(height: 16),
+              Text(
+                'App failed to initialize properly.\nPlease restart the app.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
           ),
         ),
       ),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class FlowIQAppNoFirebase extends StatelessWidget {
+  const FlowIQAppNoFirebase({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flow iQ - Safe Mode',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink),
+        useMaterial3: true,
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Flow iQ - Safe Mode'),
+          backgroundColor: Colors.pink,
+          foregroundColor: Colors.white,
+        ),
+        body: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.warning_amber_rounded,
+                size: 100,
+                color: Colors.orange,
+              ),
+              SizedBox(height: 24),
+              Text(
+                'Running in Safe Mode',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.orange,
+                ),
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Firebase features unavailable\nbut core app is stable',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+      ),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

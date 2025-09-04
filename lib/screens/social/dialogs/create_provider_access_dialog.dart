@@ -162,7 +162,7 @@ class _CreateProviderAccessDialogState
                 const SizedBox(width: 12),
                 Expanded(
                   child: DropdownButtonFormField<ProviderType>(
-                    value: _selectedProviderType,
+                    initialValue: _selectedProviderType,
                     decoration: const InputDecoration(
                       labelText: 'Type *',
                       border: OutlineInputBorder(),

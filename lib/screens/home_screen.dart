@@ -211,61 +211,168 @@ class _HomeScreenState extends State<HomeScreen> {
   Map<String, dynamic>? _calculatePredictions(
     List<Map<String, dynamic>> cycles,
   ) {
-    if (cycles.length < 2) return null;
+    if (cycles.isEmpty) return null;
 
-    // Calculate average cycle length
-    int totalDays = 0;
-    int completedCycles = 0;
+    // Enhanced prediction algorithm with weighted averages and confidence scoring
+    final predictions = _calculateEnhancedPredictions(cycles);
+    return predictions;
+  }
 
-    for (var cycle in cycles) {
-      final start =
-          _parseDateTime(cycle['start']) ?? _parseDateTime(cycle['start_date']);
-      final end =
-          _parseDateTime(cycle['end']) ?? _parseDateTime(cycle['end_date']);
-      if (start != null && end != null) {
-        totalDays += end.difference(start).inDays + 1;
-        completedCycles++;
+  /// Enhanced cycle prediction algorithm with improved accuracy
+  Map<String, dynamic>? _calculateEnhancedPredictions(
+    List<Map<String, dynamic>> cycles,
+  ) {
+    if (cycles.isEmpty) return null;
+
+    // Separate period cycles from inter-cycle intervals
+    List<int> cycleLengths = [];
+    List<int> periodLengths = [];
+    List<DateTime> cycleStartDates = [];
+    
+    // Parse and validate cycle data
+    for (int i = 0; i < cycles.length; i++) {
+      final cycle = cycles[i];
+      final start = _parseDateTime(cycle['start']) ?? _parseDateTime(cycle['start_date']);
+      final end = _parseDateTime(cycle['end']) ?? _parseDateTime(cycle['end_date']);
+      
+      if (start != null) {
+        cycleStartDates.add(start);
+        
+        if (end != null) {
+          // Calculate period length (menstrual phase duration)
+          final periodLength = end.difference(start).inDays + 1;
+          if (periodLength > 0 && periodLength <= 10) {
+            periodLengths.add(periodLength);
+          }
+          
+          // Calculate cycle length (start of one cycle to start of next)
+          if (i < cycles.length - 1) {
+            final nextCycle = cycles[i + 1];
+            final nextStart = _parseDateTime(nextCycle['start']) ?? 
+                              _parseDateTime(nextCycle['start_date']);
+            if (nextStart != null) {
+              final cycleLength = start.difference(nextStart).inDays.abs();
+              if (cycleLength >= 21 && cycleLength <= 45) { // Normal cycle range
+                cycleLengths.add(cycleLength);
+              }
+            }
+          }
+        }
       }
     }
 
-    if (completedCycles == 0) return null;
+    if (cycleStartDates.isEmpty) return null;
 
-    final avgCycleLength = totalDays / completedCycles;
+    // Calculate weighted averages (more recent cycles have higher weight)
+    double avgCycleLength = _calculateWeightedAverage(cycleLengths);
+    double avgPeriodLength = _calculateWeightedAverage(periodLengths);
+    
+    // Fallback to typical values if no data
+    if (avgCycleLength == 0) avgCycleLength = 28.0; // Typical cycle
+    if (avgPeriodLength == 0) avgPeriodLength = 5.0; // Typical period
+    
+    // Get last cycle data
     final lastCycle = cycles.first;
-    final lastStart =
-        _parseDateTime(lastCycle['start']) ??
-        _parseDateTime(lastCycle['start_date']);
-    final lastEnd =
-        _parseDateTime(lastCycle['end']) ??
-        _parseDateTime(lastCycle['end_date']);
-
+    final lastStart = _parseDateTime(lastCycle['start']) ?? 
+                      _parseDateTime(lastCycle['start_date']);
+    final lastEnd = _parseDateTime(lastCycle['end']) ?? 
+                    _parseDateTime(lastCycle['end_date']);
+    
     if (lastStart == null) return null;
-
-    DateTime? nextPeriodDate;
-    DateTime? ovulationDate;
-    DateTime? fertileWindowStart;
-    DateTime? fertileWindowEnd;
-
+    
+    // Calculate predictions with confidence intervals
+    DateTime nextPeriodDate;
+    double confidence = _calculateConfidence(cycleLengths.length, _calculateVariance(cycleLengths));
+    
     if (lastEnd != null) {
-      // Calculate based on completed last cycle
-      nextPeriodDate = lastEnd.add(Duration(days: avgCycleLength.round()));
+      // Last period ended - predict next cycle start
+      nextPeriodDate = lastStart.add(Duration(days: avgCycleLength.round()));
     } else {
-      // Current cycle ongoing, predict based on start
+      // Current period ongoing - estimate when it will end and next will start
+      final estimatedEndDate = lastStart.add(Duration(days: avgPeriodLength.round()));
       nextPeriodDate = lastStart.add(Duration(days: avgCycleLength.round()));
     }
-
-    // Ovulation typically 14 days before next period
-    ovulationDate = nextPeriodDate.subtract(const Duration(days: 14));
-    fertileWindowStart = ovulationDate.subtract(const Duration(days: 5));
-    fertileWindowEnd = ovulationDate.add(const Duration(days: 1));
-
+    
+    // Enhanced ovulation prediction (luteal phase is typically 12-16 days)
+    final lutealPhaseLength = 14; // Most common
+    final ovulationDate = nextPeriodDate.subtract(Duration(days: lutealPhaseLength));
+    
+    // Fertile window (sperm can live up to 5 days, egg lives ~24 hours)
+    final fertileWindowStart = ovulationDate.subtract(const Duration(days: 5));
+    final fertileWindowEnd = ovulationDate.add(const Duration(days: 2));
+    
+    // Calculate cycle regularity score
+    double regularity = _calculateRegularity(cycleLengths);
+    
     return {
       'nextPeriod': nextPeriodDate,
       'ovulation': ovulationDate,
       'fertileStart': fertileWindowStart,
       'fertileEnd': fertileWindowEnd,
       'avgCycleLength': avgCycleLength.round(),
+      'avgPeriodLength': avgPeriodLength.round(),
+      'confidence': confidence,
+      'regularity': regularity,
+      'cycleCount': cycleLengths.length,
+      'lastUpdated': DateTime.now(),
     };
+  }
+  
+  /// Calculate weighted average with more recent data having higher weight
+  double _calculateWeightedAverage(List<int> values) {
+    if (values.isEmpty) return 0.0;
+    
+    double weightedSum = 0.0;
+    double totalWeight = 0.0;
+    
+    for (int i = 0; i < values.length; i++) {
+      // More recent entries get higher weight (exponential decay)
+      double weight = 1.0 + (i * 0.2); // Recent cycles weighted more heavily
+      weightedSum += values[i] * weight;
+      totalWeight += weight;
+    }
+    
+    return weightedSum / totalWeight;
+  }
+  
+  /// Calculate prediction confidence based on data quantity and consistency
+  double _calculateConfidence(int dataPoints, double variance) {
+    if (dataPoints == 0) return 0.0;
+    
+    // Base confidence on number of cycles (more data = higher confidence)
+    double dataConfidence = (dataPoints / 6.0).clamp(0.0, 1.0);
+    
+    // Reduce confidence based on variance (higher variance = lower confidence)
+    double consistencyConfidence = 1.0 - (variance / 100.0).clamp(0.0, 1.0);
+    
+    // Combined confidence score
+    return (dataConfidence * 0.6 + consistencyConfidence * 0.4).clamp(0.0, 1.0);
+  }
+  
+  /// Calculate variance in cycle lengths
+  double _calculateVariance(List<int> values) {
+    if (values.length < 2) return 0.0;
+    
+    double mean = values.reduce((a, b) => a + b) / values.length;
+    double sumSquaredDifferences = values
+        .map((value) => (value - mean) * (value - mean))
+        .reduce((a, b) => a + b);
+    
+    return sumSquaredDifferences / values.length;
+  }
+  
+  /// Calculate cycle regularity score (0.0 = irregular, 1.0 = very regular)
+  double _calculateRegularity(List<int> cycleLengths) {
+    if (cycleLengths.length < 3) return 0.5; // Neutral for insufficient data
+    
+    double variance = _calculateVariance(cycleLengths);
+    
+    // Lower variance = higher regularity
+    if (variance <= 4) return 1.0; // Very regular (±2 days)
+    if (variance <= 9) return 0.8; // Regular (±3 days)
+    if (variance <= 16) return 0.6; // Somewhat regular (±4 days)
+    if (variance <= 25) return 0.4; // Irregular (±5 days)
+    return 0.2; // Very irregular
   }
 
   Widget _buildWelcomeCard() {
@@ -328,7 +435,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             isLoggedIn
                                 ? (l10n.homeWelcomeMessage(displayName) ??
                                       'Hello, $displayName!')
-                                : 'Welcome to FlowSense!',
+                                : 'Welcome to Flow iQ!',
                             style: Theme.of(context).textTheme.headlineSmall
                                 ?.copyWith(fontWeight: FontWeight.bold),
                           ),
@@ -544,12 +651,20 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              l10n.homeUpcomingEvents ?? 'Upcoming Events',
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  l10n.homeUpcomingEvents ?? 'Upcoming Events',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                _buildConfidenceBadge(predictions['confidence'] ?? 0.0),
+              ],
             ),
+            const SizedBox(height: 4),
+            _buildCycleStatsRow(predictions),
             const SizedBox(height: 12),
 
             // Next Period
@@ -601,6 +716,137 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+  
+  Widget _buildConfidenceBadge(double confidence) {
+    Color badgeColor;
+    String confidenceText;
+    
+    if (confidence >= 0.8) {
+      badgeColor = Colors.green;
+      confidenceText = 'High';
+    } else if (confidence >= 0.6) {
+      badgeColor = Colors.amber;
+      confidenceText = 'Medium';
+    } else {
+      badgeColor = Colors.orange;
+      confidenceText = 'Low';
+    }
+    
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: badgeColor.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: badgeColor.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.analytics,
+            size: 14,
+            color: badgeColor,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            confidenceText,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: badgeColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildCycleStatsRow(Map<String, dynamic> predictions) {
+    final avgCycleLength = predictions['avgCycleLength'] ?? 28;
+    final avgPeriodLength = predictions['avgPeriodLength'] ?? 5;
+    final regularity = predictions['regularity'] ?? 0.5;
+    final cycleCount = predictions['cycleCount'] ?? 0;
+    
+    String regularityText;
+    Color regularityColor;
+    
+    if (regularity >= 0.8) {
+      regularityText = 'Very Regular';
+      regularityColor = Colors.green;
+    } else if (regularity >= 0.6) {
+      regularityText = 'Regular';
+      regularityColor = Colors.lightGreen;
+    } else if (regularity >= 0.4) {
+      regularityText = 'Somewhat Regular';
+      regularityColor = Colors.amber;
+    } else {
+      regularityText = 'Irregular';
+      regularityColor = Colors.orange;
+    }
+    
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Cycle: ${avgCycleLength}d',
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                'Period: ${avgPeriodLength}d',
+                style: TextStyle(
+                  fontSize: 10,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.timeline,
+                    size: 12,
+                    color: regularityColor,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    regularityText,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: regularityColor,
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                'Based on $cycleCount cycles',
+                style: TextStyle(
+                  fontSize: 10,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

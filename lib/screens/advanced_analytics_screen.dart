@@ -248,8 +248,9 @@ class _AdvancedAnalyticsScreenState extends State<AdvancedAnalyticsScreen>
   }
 
   Widget _buildOverviewTab() {
-    if (_statistics == null)
+    if (_statistics == null) {
       return const Center(child: Text('No data available'));
+    }
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),

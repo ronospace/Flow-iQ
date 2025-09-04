@@ -264,7 +264,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 prefixIcon: const Icon(Icons.email_outlined),
                                 filled: true,
-                                fillColor: theme.colorScheme.surfaceVariant
+                                fillColor: theme.colorScheme.surfaceContainerHighest
                                     .withValues(alpha: 0.3),
                               ),
                             ),
@@ -281,7 +281,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 prefixIcon: const Icon(Icons.lock_outlined),
                                 filled: true,
-                                fillColor: theme.colorScheme.surfaceVariant
+                                fillColor: theme.colorScheme.surfaceContainerHighest
                                     .withValues(alpha: 0.3),
                               ),
                             ),

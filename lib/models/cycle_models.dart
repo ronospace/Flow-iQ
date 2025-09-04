@@ -596,14 +596,18 @@ class CycleFilter {
   List<CycleData> apply(List<CycleData> cycles) {
     return cycles.where((cycle) {
       // Date range filter
-      if (startDate != null && cycle.startDate.isBefore(startDate!))
+      if (startDate != null && cycle.startDate.isBefore(startDate!)) {
         return false;
-      if (endDate != null && cycle.startDate.isAfter(endDate!)) return false;
+      }
+      if (endDate != null && cycle.startDate.isAfter(endDate!)) {
+        return false;
+      }
 
       // Flow intensity filter
       if (flowIntensities != null &&
-          !flowIntensities!.contains(cycle.flowIntensity))
+          !flowIntensities!.contains(cycle.flowIntensity)) {
         return false;
+      }
 
       // Symptom filter
       if (symptoms != null && symptoms!.isNotEmpty) {
@@ -618,10 +622,12 @@ class CycleFilter {
       // Wellbeing filters
       if (minMood != null && cycle.wellbeing.mood < minMood!) return false;
       if (maxMood != null && cycle.wellbeing.mood > maxMood!) return false;
-      if (minEnergy != null && cycle.wellbeing.energy < minEnergy!)
+      if (minEnergy != null && cycle.wellbeing.energy < minEnergy!) {
         return false;
-      if (maxEnergy != null && cycle.wellbeing.energy > maxEnergy!)
+      }
+      if (maxEnergy != null && cycle.wellbeing.energy > maxEnergy!) {
         return false;
+      }
       if (minPain != null && cycle.wellbeing.pain < minPain!) return false;
       if (maxPain != null && cycle.wellbeing.pain > maxPain!) return false;
 

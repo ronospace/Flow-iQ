@@ -223,7 +223,7 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
 
   Widget _buildFrequencySelection() {
     return DropdownButtonFormField<ReminderFrequency>(
-      value: _selectedFrequency,
+      initialValue: _selectedFrequency,
       decoration: const InputDecoration(
         labelText: 'Frequency',
         prefixIcon: Icon(Icons.repeat),
@@ -434,7 +434,7 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<ReminderPriority>(
-              value: _selectedPriority,
+              initialValue: _selectedPriority,
               decoration: const InputDecoration(
                 labelText: 'Priority',
                 prefixIcon: Icon(Icons.flag),
@@ -465,7 +465,7 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<NotificationSound>(
-              value: _selectedSound,
+              initialValue: _selectedSound,
               decoration: const InputDecoration(
                 labelText: 'Sound',
                 prefixIcon: Icon(Icons.music_note),

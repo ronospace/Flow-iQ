@@ -261,7 +261,7 @@ class _FeedbackScreenState extends State<FeedbackScreen>
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: _selectedCategory,
+                initialValue: _selectedCategory,
                 decoration: InputDecoration(
                   labelText: 'Category',
                   border: OutlineInputBorder(
@@ -309,7 +309,7 @@ class _FeedbackScreenState extends State<FeedbackScreen>
                     _includeEmail = value;
                   });
                 },
-                activeColor: AppTheme.primaryPink,
+                activeThumbColor: AppTheme.primaryPink,
               ),
               if (_includeEmail) ...[
                 const SizedBox(height: 16),

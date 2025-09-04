@@ -3,10 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 import '../models/cycle_models.dart';
 import '../services/firebase_service.dart';
-import '../theme/app_theme.dart';
-import '../models/cycle_models.dart';
-import '../services/tensorflow_prediction_service.dart';
-import '../services/ai_insights_engine.dart';
 
 class EnhancedCycleLoggingScreen extends StatefulWidget {
   const EnhancedCycleLoggingScreen({super.key});
@@ -159,9 +155,15 @@ class _EnhancedCycleLoggingScreenState extends State<EnhancedCycleLoggingScreen>
   }
 
   Future<void> _saveCycle() async {
-    if (_startDate == null || _endDate == null) {
+    // Enhanced date validation
+    final validationResult = _validateDates();
+    if (!validationResult.isValid) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select both start and end dates')),
+        SnackBar(
+          content: Text(validationResult.errorMessage),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 4),
+        ),
       );
       return;
     }
@@ -246,6 +248,74 @@ class _EnhancedCycleLoggingScreenState extends State<EnhancedCycleLoggingScreen>
       _selectedSymptoms.clear();
       _notesController.clear();
     });
+  }
+
+  /// Enhanced date validation with comprehensive logic
+  DateValidationResult _validateDates() {
+    if (_startDate == null || _endDate == null) {
+      return DateValidationResult(
+        isValid: false,
+        errorMessage: 'Please select both start and end dates',
+      );
+    }
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final startDay = DateTime(_startDate!.year, _startDate!.month, _startDate!.day);
+    final endDay = DateTime(_endDate!.year, _endDate!.month, _endDate!.day);
+
+    // Check if start date is after end date
+    if (startDay.isAfter(endDay)) {
+      return DateValidationResult(
+        isValid: false,
+        errorMessage: 'Start date cannot be after end date',
+      );
+    }
+
+    // Check if both dates are in the future
+    if (startDay.isAfter(today)) {
+      return DateValidationResult(
+        isValid: false,
+        errorMessage: 'Start date cannot be in the future',
+      );
+    }
+
+    if (endDay.isAfter(today)) {
+      return DateValidationResult(
+        isValid: false,
+        errorMessage: 'End date cannot be in the future',
+      );
+    }
+
+    // Calculate cycle length
+    final cycleLength = endDay.difference(startDay).inDays + 1;
+
+    // Check for unreasonably short cycles (less than 1 day)
+    if (cycleLength < 1) {
+      return DateValidationResult(
+        isValid: false,
+        errorMessage: 'Cycle must be at least 1 day long',
+      );
+    }
+
+    // Check for unreasonably long cycles (more than 10 days)
+    if (cycleLength > 10) {
+      return DateValidationResult(
+        isValid: false,
+        errorMessage: 'Cycle length seems unusually long (${cycleLength} days). Please verify your dates.',
+      );
+    }
+
+    // Check if dates are too far in the past (more than 2 years)
+    final daysSinceStart = today.difference(startDay).inDays;
+    if (daysSinceStart > 730) {
+      return DateValidationResult(
+        isValid: false,
+        errorMessage: 'Start date is too far in the past (more than 2 years ago)',
+      );
+    }
+
+    return DateValidationResult(isValid: true);
   }
 
   FlowIntensity _parseFlowIntensity(String flow) {
@@ -1344,4 +1414,14 @@ class SymptomOption {
   final Color color;
 
   SymptomOption(this.id, this.name, this.icon, this.color);
+}
+
+class DateValidationResult {
+  final bool isValid;
+  final String errorMessage;
+
+  DateValidationResult({
+    required this.isValid,
+    this.errorMessage = '',
+  });
 }

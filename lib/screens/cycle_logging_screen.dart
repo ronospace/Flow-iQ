@@ -179,7 +179,7 @@ class _CycleLoggingScreenState extends State<CycleLoggingScreen> {
                   end: Alignment.bottomCenter,
                   colors: [
                     theme.colorScheme.primaryContainer.withValues(alpha: 0.1),
-                    theme.colorScheme.background,
+                    theme.colorScheme.surface,
                   ],
                 ),
         ),
@@ -323,7 +323,7 @@ class _CycleLoggingScreenState extends State<CycleLoggingScreen> {
               if (_startDate == null || _endDate == null)
                 Card(
                   color: isDarkMode
-                      ? theme.colorScheme.surfaceVariant.withValues(alpha: 0.5)
+                      ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
                       : theme.colorScheme.primaryContainer.withValues(
                           alpha: 0.3,
                         ),

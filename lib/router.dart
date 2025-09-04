@@ -34,6 +34,7 @@ import 'screens/onboarding_completion_screen.dart'; // 🎉 ONBOARDING COMPLETIO
 import 'screens/feedback_screen.dart'; // 💬 FEEDBACK SCREEN
 import 'screens/share_ideas_screen.dart'; // 💡 SHARE IDEAS SCREEN
 import 'screens/flowsense_coming_soon_screen.dart'; // 🔮 FLOWSENSE COMING SOON
+import 'screens/welcome_test_screen.dart'; // 🧪 TEST WELCOME SCREEN
 import 'services/auth_state_notifier.dart';
 
 class AppRouter {
@@ -41,7 +42,7 @@ class AppRouter {
     final authState = Provider.of<AuthStateNotifier>(context, listen: false);
 
     return GoRouter(
-      initialLocation: '/splash',
+      initialLocation: '/welcome-test',
       refreshListenable: authState,
       errorBuilder: (context, state) => Scaffold(
         body: Center(
@@ -66,8 +67,8 @@ class AppRouter {
         final isLoggedIn = authState.isLoggedIn;
         final location = state.uri.toString();
 
-        // Allow splash screen to show without redirect
-        if (location == '/splash') {
+        // Allow test and splash screens to show without redirect
+        if (location == '/splash' || location == '/welcome-test') {
           return null;
         }
 
@@ -93,6 +94,10 @@ class AppRouter {
         GoRoute(
           path: '/splash',
           builder: (context, state) => const SplashScreen(),
+        ),
+        GoRoute(
+          path: '/welcome-test',
+          builder: (context, state) => const WelcomeTestScreen(),
         ),
         GoRoute(
           path: '/login',

@@ -131,12 +131,12 @@ class DailyLogEntry {
       try {
         return DateTime.parse(value);
       } catch (e) {
-        print('Error parsing date string: $value - $e');
+        debugPrint('Error parsing date string: $value - $e');
         return null;
       }
     }
 
-    print('Unknown date format: ${value.runtimeType} - $value');
+    debugPrint('Unknown date format: ${value.runtimeType} - $value');
     return null;
   }
 

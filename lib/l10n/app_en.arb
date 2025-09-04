@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appTitle": "FlowSense",
+  "appTitle": "Flow iQ",
   "@appTitle": {
     "description": "The title of the application"
   },
@@ -276,7 +276,7 @@
     "description": "Low energy level"
   },
   
-  "notificationTitle": "FlowSense Notification",
+  "notificationTitle": "Flow iQ Notification",
   "@notificationTitle": {
     "description": "Default notification title"
   },
@@ -302,7 +302,7 @@
     "description": "Accessibility label for settings button"
   },
 
-  "homeTitle": "FlowSense",
+  "homeTitle": "Flow iQ",
   "@homeTitle": {
     "description": "Home screen title"
   },
