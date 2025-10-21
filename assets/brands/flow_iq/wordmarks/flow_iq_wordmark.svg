@@ -1,0 +1,45 @@
+<svg width="180" height="50" viewBox="0 0 180 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1E3A8A;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06B6D4;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="iqGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EF4444;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="textGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- "Flow" Text -->
+  <text x="10" y="32" font-family="SF Pro Display, -apple-system, system-ui" font-size="28" font-weight="700" fill="url(#textGradient)" filter="url(#textGlow)">
+    Flow
+  </text>
+  
+  <!-- "iQ" Text with distinctive styling -->
+  <text x="85" y="32" font-family="SF Pro Display, -apple-system, system-ui" font-size="28" font-weight="300" fill="url(#iqGradient)" filter="url(#textGlow)">
+    i
+  </text>
+  <text x="97" y="32" font-family="SF Pro Display, -apple-system, system-ui" font-size="28" font-weight="700" fill="url(#iqGradient)" filter="url(#textGlow)">
+    Q
+  </text>
+  
+  <!-- Intelligence Indicator -->
+  <circle cx="103" cy="18" r="2" fill="url(#iqGradient)" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;1;0.8" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Tagline -->
+  <text x="10" y="45" font-family="SF Pro Text, -apple-system, system-ui" font-size="9" font-weight="600" fill="#64748B" letter-spacing="2px" opacity="0.8">
+    CLINICAL INTELLIGENCE
+  </text>
+</svg>

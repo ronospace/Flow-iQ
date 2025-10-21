@@ -1,0 +1,49 @@
+<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="clinicalGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E3A8A;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06B6D4;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EF4444;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1E3A8A" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Background Circle -->
+  <circle cx="30" cy="30" r="28" fill="white" stroke="url(#clinicalGradient)" stroke-width="2" filter="url(#shadow)"/>
+  
+  <!-- Medical Cross -->
+  <rect x="28" y="18" width="4" height="24" rx="2" fill="url(#clinicalGradient)"/>
+  <rect x="18" y="28" width="24" height="4" rx="2" fill="url(#clinicalGradient)"/>
+  
+  <!-- Flow Curves -->
+  <path d="M15 20 Q22 15, 30 20 Q38 25, 45 20" stroke="url(#accentGradient)" stroke-width="2.5" fill="none"/>
+  <path d="M15 40 Q22 35, 30 40 Q38 45, 45 40" stroke="url(#accentGradient)" stroke-width="2.5" fill="none"/>
+  
+  <!-- Intelligence Nodes -->
+  <circle cx="20" cy="22" r="2.5" fill="url(#accentGradient)">
+    <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="40" cy="22" r="2.5" fill="url(#accentGradient)">
+    <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="20" cy="38" r="2.5" fill="url(#accentGradient)">
+    <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" begin="1s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="40" cy="38" r="2.5" fill="url(#accentGradient)">
+    <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" begin="1.5s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Neural Connections -->
+  <line x1="20" y1="22" x2="30" y2="30" stroke="url(#clinicalGradient)" stroke-width="1" opacity="0.5"/>
+  <line x1="40" y1="22" x2="30" y2="30" stroke="url(#clinicalGradient)" stroke-width="1" opacity="0.5"/>
+  <line x1="20" y1="38" x2="30" y2="30" stroke="url(#clinicalGradient)" stroke-width="1" opacity="0.5"/>
+  <line x1="40" y1="38" x2="30" y2="30" stroke="url(#clinicalGradient)" stroke-width="1" opacity="0.5"/>
+</svg>
