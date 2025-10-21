@@ -44,38 +44,38 @@ class DefaultFirebaseOptions {
     apiKey: 'AIzaSyC9H7nDkC9H7nDkC9H7nDkC9H7nDkC9H7n',
     appId: '1:123456789012:web:1234567890abcdef',
     messagingSenderId: '123456789012',
-    projectId: 'flow-ai-health',
-    authDomain: 'flow-ai-health.firebaseapp.com',
-    storageBucket: 'flow-ai-health.appspot.com',
+    projectId: 'flow-iq-health',
+    authDomain: 'flow-iq-health.firebaseapp.com',
+    storageBucket: 'flow-iq-health.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyC9H7nDkC9H7nDkC9H7nDkC9H7nDkC9H7n',
     appId: '1:123456789012:android:1234567890abcdef',
     messagingSenderId: '123456789012',
-    projectId: 'flow-ai-health',
+    projectId: 'flow-iq-health',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyC9H7nDkC9H7nDkC9H7nDkC9H7nDkC9H7n',
     appId: '1:123456789012:ios:1234567890abcdef',
     messagingSenderId: '123456789012',
-    projectId: 'flow-ai-health',
-    iosBundleId: 'com.flowai.health.flowAi',
+    projectId: 'flow-iq-health',
+    iosBundleId: 'com.flowiq.health.flowiq',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyC9H7nDkC9H7nDkC9H7nDkC9H7nDkC9H7n',
     appId: '1:123456789012:macos:1234567890abcdef',
     messagingSenderId: '123456789012',
-    projectId: 'flow-ai-health',
-    iosBundleId: 'com.flowai.health.flowAi',
+    projectId: 'flow-iq-health',
+    iosBundleId: 'com.flowiq.health.flowiq',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyC9H7nDkC9H7nDkC9H7nDkC9H7nDkC9H7n',
     appId: '1:123456789012:windows:1234567890abcdef',
     messagingSenderId: '123456789012',
-    projectId: 'flow-ai-health',
+    projectId: 'flow-iq-health',
   );
 }

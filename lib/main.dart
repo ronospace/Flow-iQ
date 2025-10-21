@@ -56,13 +56,13 @@ void main() async {
           Provider.of<EnhancedAIService>(context, listen: false),
         )),
       ],
-      child: const FlowiQApp(),
+      child: const FlowIQApp(),
     ),
   );
 }
 
-class FlowiQApp extends StatelessWidget {
-  const FlowiQApp({super.key});
+class FlowIQApp extends StatelessWidget {
+  const FlowIQApp({super.key});
 
   @override
   Widget build(BuildContext context) {
