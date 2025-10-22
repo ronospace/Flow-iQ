@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../services/flow_iq_sync_service.dart';
+import '../services/enhanced_auth_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -299,6 +301,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: const Text('Rate the App'),
           trailing: const Icon(Icons.arrow_forward_ios, size: 16),
           onTap: () => _rateApp(),
+        ),
+        ListTile(
+          leading: const Icon(Icons.logout, color: Colors.red),
+          title: const Text(
+            'Sign Out',
+            style: TextStyle(color: Colors.red),
+          ),
+          trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.red),
+          onTap: () => _showSignOutDialog(),
+        ),
+        ListTile(
+          leading: const Icon(Icons.delete_forever, color: Colors.red),
+          title: const Text(
+            'Delete Account',
+            style: TextStyle(color: Colors.red),
+          ),
+          trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.red),
+          onTap: () => _showDeleteAccountDialog(),
         ),
       ],
     );
@@ -654,6 +674,102 @@ class _SettingsScreenState extends State<SettingsScreen> {
     // TODO: Implement app rating
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Thank you for your feedback!')),
+    );
+  }
+  
+  void _showSignOutDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Sign Out'),
+        content: const Text('Are you sure you want to sign out?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () async {
+              Navigator.pop(context); // Close dialog
+              
+              try {
+                final authService = Provider.of<EnhancedAuthService>(context, listen: false);
+                await authService.signOut();
+                
+                if (mounted) {
+                  // Navigate to auth screen
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/auth',
+                    (route) => false,
+                  );
+                }
+              } catch (e) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error signing out: $e')),
+                  );
+                }
+              }
+            },
+            child: const Text('Sign Out'),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  void _showDeleteAccountDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Account'),
+        content: const Text(
+          'This will permanently delete your account and all associated data. This action cannot be undone.\n\nAre you absolutely sure?'
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () async {
+              Navigator.pop(context); // Close dialog
+              
+              try {
+                final authService = Provider.of<EnhancedAuthService>(context, listen: false);
+                await authService.deleteAccount();
+                
+                if (mounted) {
+                  // Navigate to auth screen
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/auth',
+                    (route) => false,
+                  );
+                  
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Account deleted successfully')),
+                  );
+                }
+              } catch (e) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error deleting account: $e')),
+                  );
+                }
+              }
+            },
+            child: const Text('Delete Account'),
+          ),
+        ],
+      ),
     );
   }
 

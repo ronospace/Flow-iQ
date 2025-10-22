@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../themes/flow_iq_visual_system.dart';
+import '../services/enhanced_auth_service.dart';
 
 /// Flow iQ Clinical Splash Screen
 class FlowIQSplashScreen extends StatefulWidget {
@@ -38,10 +40,20 @@ class _FlowIQSplashScreenState extends State<FlowIQSplashScreen>
   void _startAnimation() async {
     _controller.forward();
     
-    // Navigate to main app after animation
+    // Wait for animation
     await Future.delayed(const Duration(seconds: 3));
+    
     if (mounted) {
-      Navigator.of(context).pushReplacementNamed('/main');
+      // Check if user is already authenticated
+      final authService = Provider.of<EnhancedAuthService>(context, listen: false);
+      final isAuthenticated = authService.currentUser != null;
+      
+      // Navigate based on auth state
+      if (isAuthenticated) {
+        Navigator.of(context).pushReplacementNamed('/main');
+      } else {
+        Navigator.of(context).pushReplacementNamed('/auth');
+      }
     }
   }
 

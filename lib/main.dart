@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'services/enhanced_auth_service.dart';
 import 'services/flow_iq_sync_service.dart';
 import 'services/health_diagnosis_service.dart';
 import 'services/enhanced_ai_service.dart';
@@ -36,6 +37,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => EnhancedAuthService()),
         ChangeNotifierProvider(create: (_) => FlowIQSyncService()),
         ChangeNotifierProvider(create: (context) => HealthDiagnosisService(
           Provider.of<FlowIQSyncService>(context, listen: false),
