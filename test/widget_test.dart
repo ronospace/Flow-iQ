@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
-import 'package:flow_ai/main.dart';
-import 'package:flow_ai/services/flow_iq_sync_service.dart';
+import 'package:flow_iq/main.dart';
+import 'package:flow_iq/services/flow_iq_sync_service.dart';
 
 void main() {
   testWidgets('App loads home screen', (WidgetTester tester) async {

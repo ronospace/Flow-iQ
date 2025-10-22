@@ -646,6 +646,7 @@ class _FlowAIMetricCardState extends State<FlowAIMetricCard>
       morphColors: FlowAIVisualSystem.emotionalMorph,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           // Header with icon and trend
           Row(
