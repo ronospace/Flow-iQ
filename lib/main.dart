@@ -18,6 +18,7 @@ import 'screens/health_diagnosis_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/dashboard_example.dart';
 import 'screens/flow_iq_splash_screen.dart';
+import 'screens/auth_screen.dart';
 import 'themes/flow_iq_visual_system.dart';
 
 void main() async {
@@ -73,6 +74,7 @@ class FlowIQApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       home: const FlowIQSplashScreen(),
       routes: {
+        '/auth': (context) => const AuthScreen(),
         '/main': (context) => const MainScreen(),
         '/home': (context) => const HomeScreen(),
         '/tracking': (context) => const TrackingScreen(),
