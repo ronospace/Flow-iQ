@@ -129,6 +129,7 @@ See [ANDROID_RELEASE_GUIDE.md](ANDROID_RELEASE_GUIDE.md) for detailed instructio
 - **[Clinical Compliance](docs/CLINICAL_COMPLIANCE_ROADMAP.md)** - Medical compliance and regulatory requirements
 - **[Medical Sources](docs/MEDICAL_SOURCES.md)** - Research citations and references
 - **[Rejection Fix Guide](APP_STORE_REJECTION_FIX.md)** - Latest App Store submission updates
+- **[Compliance Checklists](compliance/)** - Version-specific compliance documentation (PDF & Markdown)
 
 ---
 
@@ -209,6 +210,16 @@ flutter analyze
 ## 🤝 Contributing
 
 This is a proprietary project owned by ZyraFlow Inc. For collaboration inquiries, please contact us through official channels.
+
+### About Flow iQ and Flow Ai
+
+**Flow iQ** and **Flow Ai** are developed and maintained by ZyraFlow Inc.™ (© 2025 ZyraFlow Inc. All rights reserved.)
+
+These applications work together as a comprehensive menstrual health ecosystem:
+- **Flow iQ** - Consumer-facing AI-powered period tracking app
+- **Flow Ai** - Professional healthcare platform for clinical integration
+
+Both applications share core technology and are part of the ZyraFlow health intelligence platform.
 
 ---
 
