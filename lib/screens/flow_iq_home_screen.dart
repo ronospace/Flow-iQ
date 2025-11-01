@@ -503,14 +503,18 @@ class _FlowIQHomeScreenState extends State<FlowIQHomeScreen>
                 ),
               ),
               const SizedBox(width: 8),
-              FlowIQVisualSystem.createFlowShaderMask(
-                colors: _getHormonalGradient(),
-                time: _colorMorphAnimation.value,
-                child: Text(
-                  'Clinical Cycle Analysis',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
+              Flexible(
+                child: FlowIQVisualSystem.createFlowShaderMask(
+                  colors: _getHormonalGradient(),
+                  time: _colorMorphAnimation.value,
+                  child: Text(
+                    'Clinical Cycle Analysis',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                    overflow: TextOverflow.visible,
+                    softWrap: true,
                   ),
                 ),
               ),
@@ -643,10 +647,10 @@ class _FlowIQHomeScreenState extends State<FlowIQHomeScreen>
       crossAxisCount: 2,
       mainAxisSpacing: 16,
       crossAxisSpacing: 16,
-      childAspectRatio: 1.2,
+      childAspectRatio: 1.0,  // Changed from 1.2 to 1.0 for more height
       children: [
         FlowIQMetricCard(
-          title: 'Clinical Harmony',
+          title: 'Harmony',  // Shortened from 'Clinical Harmony'
           value: '94',
           unit: '%',
           icon: Icons.waves,
@@ -655,16 +659,16 @@ class _FlowIQHomeScreenState extends State<FlowIQHomeScreen>
           enableColorMorph: true,
         ),
         FlowIQMetricCard(
-          title: 'Hormonal Balance',
+          title: 'Balance',  // Shortened from 'Hormonal Balance'
           value: '96.8',
           unit: '%',
           icon: Icons.favorite_border,
           trendDirection: 'stable',
-          subtitle: 'Medical precision',
+          subtitle: 'Hormonal',  // Shortened from 'Medical precision'
           enableColorMorph: true,
         ),
         FlowIQMetricCard(
-          title: 'Clinical Prediction',
+          title: 'Clinical',  // Shortened from 'Clinical Prediction'
           value: '98',
           unit: '%',
           icon: Icons.auto_awesome,
@@ -673,12 +677,12 @@ class _FlowIQHomeScreenState extends State<FlowIQHomeScreen>
           enableColorMorph: true,
         ),
         FlowIQMetricCard(
-          title: 'Medical Wellness',
+          title: 'Wellness',  // Shortened from 'Medical Wellness'
           value: '92.1',
           unit: '%',
           icon: Icons.medical_services,
           trendDirection: 'up',
-          subtitle: 'Thriving',
+          subtitle: 'Medical',  // Shortened from 'Thriving'
           enableColorMorph: true,
         ),
       ],

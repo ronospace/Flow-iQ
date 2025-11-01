@@ -11,6 +11,7 @@ import 'services/wearables_data_service.dart';
 import 'services/multimodal_input_service.dart';
 import 'services/phase_based_recommendations_service.dart';
 import 'services/ml_prediction_service.dart';
+import 'services/theme_service.dart';
 import 'screens/home_screen.dart';
 import 'screens/flow_iq_home_screen.dart';
 import 'screens/tracking_screen.dart';
@@ -37,27 +38,33 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => ThemeService()),
         ChangeNotifierProvider(create: (_) => EnhancedAuthService()),
         ChangeNotifierProvider(create: (_) => FlowIQSyncService()),
-        ChangeNotifierProvider(create: (context) => HealthDiagnosisService(
-          Provider.of<FlowIQSyncService>(context, listen: false),
-        )),
-        ChangeNotifierProvider(create: (context) => EnhancedAIService(
-          Provider.of<FlowIQSyncService>(context, listen: false),
-        )),
         ChangeNotifierProvider(create: (_) => VoiceInputService()),
         ChangeNotifierProvider(create: (_) => WearablesDataService()),
-        ChangeNotifierProvider(create: (context) => MultimodalInputService(
-          Provider.of<VoiceInputService>(context, listen: false),
-        )),
-        ChangeNotifierProvider(create: (context) => PhaseBasedRecommendationsService(
-          Provider.of<WearablesDataService>(context, listen: false),
-          Provider.of<EnhancedAIService>(context, listen: false),
-        )),
-        ChangeNotifierProvider(create: (context) => MLPredictionService(
-          Provider.of<WearablesDataService>(context, listen: false),
-          Provider.of<EnhancedAIService>(context, listen: false),
-        )),
+        ChangeNotifierProxyProvider<FlowIQSyncService, HealthDiagnosisService>(
+          create: (_) => HealthDiagnosisService(FlowIQSyncService()),
+          update: (_, syncService, healthService) => healthService ?? HealthDiagnosisService(syncService),
+        ),
+        ChangeNotifierProxyProvider<FlowIQSyncService, EnhancedAIService>(
+          create: (_) => EnhancedAIService(FlowIQSyncService()),
+          update: (_, syncService, aiService) => aiService ?? EnhancedAIService(syncService),
+        ),
+        ChangeNotifierProxyProvider<VoiceInputService, MultimodalInputService>(
+          create: (_) => MultimodalInputService(VoiceInputService()),
+          update: (_, voiceService, multimodalService) => multimodalService ?? MultimodalInputService(voiceService),
+        ),
+        ChangeNotifierProxyProvider2<WearablesDataService, EnhancedAIService, PhaseBasedRecommendationsService>(
+          create: (_) => PhaseBasedRecommendationsService(WearablesDataService(), EnhancedAIService(FlowIQSyncService())),
+          update: (_, wearablesService, aiService, recommendationsService) => 
+            recommendationsService ?? PhaseBasedRecommendationsService(wearablesService, aiService),
+        ),
+        ChangeNotifierProxyProvider2<WearablesDataService, EnhancedAIService, MLPredictionService>(
+          create: (_) => MLPredictionService(WearablesDataService(), EnhancedAIService(FlowIQSyncService())),
+          update: (_, wearablesService, aiService, mlService) => 
+            mlService ?? MLPredictionService(wearablesService, aiService),
+        ),
       ],
       child: const FlowIQApp(),
     ),
@@ -69,11 +76,13 @@ class FlowIQApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeService = Provider.of<ThemeService>(context);
+    
     return MaterialApp(
       title: 'Flow iQ - Revolutionary Clinical Period Tracking',
       theme: FlowIQVisualSystem.lightTheme,
       darkTheme: FlowIQVisualSystem.darkTheme,
-      themeMode: ThemeMode.system,
+      themeMode: themeService.themeMode,
       home: const FlowIQSplashScreen(),
       routes: {
         '/auth': (context) => const AuthScreen(),

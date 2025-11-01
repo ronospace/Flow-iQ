@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'dart:ui';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../themes/flow_ai_futuristic_theme.dart';
 
 class NeuralSplashScreen extends StatefulWidget {
@@ -280,15 +281,15 @@ class _NeuralSplashScreenState extends State<NeuralSplashScreen>
       child: Opacity(
         opacity: _logoOpacity.value,
         child: Container(
-          width: 140,
-          height: 140,
+          width: 160,
+          height: 160,
           child: Stack(
             alignment: Alignment.center,
             children: [
               // Outer neural ring
               Container(
-                width: 140,
-                height: 140,
+                width: 160,
+                height: 160,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
@@ -307,10 +308,10 @@ class _NeuralSplashScreenState extends State<NeuralSplashScreen>
                 ),
               ),
               
-              // Inner core
+              // Inner core with Flow iQ logo
               Container(
-                width: 100,
-                height: 100,
+                width: 120,
+                height: 120,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: isDark ? FlowAIFuturisticTheme.stellarGray : Colors.white,
@@ -321,32 +322,13 @@ class _NeuralSplashScreenState extends State<NeuralSplashScreen>
                   ),
                 ),
                 child: Center(
-                  child: ShaderMask(
-                    shaderCallback: (bounds) => LinearGradient(
-                      colors: isDark
-                          ? FlowAIFuturisticTheme.quantumField
-                          : FlowAIFuturisticTheme.synapseGlow,
-                    ).createShader(bounds),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.psychology,
-                          size: 40,
-                          color: Colors.white,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'AI',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
-                            letterSpacing: 2,
-                          ),
-                        ),
-                      ],
-                    ),
+                  child: SvgPicture.asset(
+                    isDark 
+                        ? 'assets/brands/flow_iq/variations/flow_iq_dark.svg'
+                        : 'assets/brands/flow_iq/icons/flow_iq_icon.svg',
+                    width: 80,
+                    height: 80,
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),
@@ -355,7 +337,7 @@ class _NeuralSplashScreenState extends State<NeuralSplashScreen>
               Transform.rotate(
                 angle: _neuralAnimation.value * 2 * math.pi,
                 child: CustomPaint(
-                  size: const Size(140, 140),
+                  size: const Size(160, 160),
                   painter: SynapsePainter(
                     animationValue: _neuralAnimation.value,
                     isDark: isDark,

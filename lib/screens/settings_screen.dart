@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/flow_iq_sync_service.dart';
 import '../services/enhanced_auth_service.dart';
+import '../services/theme_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -43,6 +44,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       body: ListView(
         children: [
+          // Theme Switcher - Prominent Glass Card
+          _buildThemeSwitcherCard(),
+          
           // Flow Ai Integration Section
           _buildSectionHeader('Flow Ai Integration'),
           _buildFlowIQConnectionCard(),
@@ -61,6 +65,145 @@ class _SettingsScreenState extends State<SettingsScreen> {
           
           const SizedBox(height: 24),
         ],
+      ),
+    );
+  }
+
+  Widget _buildThemeSwitcherCard() {
+    final themeService = Provider.of<ThemeService>(context);
+    final currentMode = themeService.themeMode;
+    
+    return Container(
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Colors.white.withOpacity(0.15),
+            Colors.white.withOpacity(0.05),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.2),
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 20,
+            spreadRadius: 5,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.palette_outlined,
+                color: Theme.of(context).primaryColor,
+                size: 24,
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                'Theme',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: _buildThemeOption(
+                  icon: Icons.brightness_auto,
+                  label: 'Auto',
+                  value: 'System',
+                  isSelected: currentMode == ThemeMode.system,
+                  onTap: () => themeService.setThemeMode(ThemeMode.system),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildThemeOption(
+                  icon: Icons.light_mode,
+                  label: 'Light',
+                  value: 'Light',
+                  isSelected: currentMode == ThemeMode.light,
+                  onTap: () => themeService.setThemeMode(ThemeMode.light),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildThemeOption(
+                  icon: Icons.dark_mode,
+                  label: 'Dark',
+                  value: 'Dark',
+                  isSelected: currentMode == ThemeMode.dark,
+                  onTap: () => themeService.setThemeMode(ThemeMode.dark),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildThemeOption({
+    required IconData icon,
+    required String label,
+    required String value,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? Theme.of(context).primaryColor.withOpacity(0.15)
+              : Colors.white.withOpacity(0.05),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected
+                ? Theme.of(context).primaryColor
+                : Colors.white.withOpacity(0.1),
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Column(
+          children: [
+            Icon(
+              icon,
+              size: 28,
+              color: isSelected
+                  ? Theme.of(context).primaryColor
+                  : Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: TextStyle(
+                inherit: true,
+                fontSize: 13,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                color: isSelected
+                    ? Theme.of(context).primaryColor
+                    : Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.8),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -181,7 +324,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () => _requestSync(),
-                      child: const Text('Sync Now'),
+                      child: const Text(
+                        'Sync Now',
+                        style: TextStyle(inherit: true),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -191,7 +337,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.red,
                       ),
-                      child: const Text('Disconnect'),
+                      child: const Text(
+                        'Disconnect',
+                        style: TextStyle(inherit: true),
+                      ),
                     ),
                   ),
                 ],
@@ -202,7 +351,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () => _showConnectionDialog(),
-                  child: const Text('Connect to Flow Ai'),
+                  child: const Text(
+                    'Connect to Flow Ai',
+                    style: TextStyle(inherit: true),
+                  ),
                 ),
               ),
             ],
@@ -230,13 +382,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           subtitle: Text(_selectedLanguage),
           trailing: const Icon(Icons.arrow_forward_ios, size: 16),
           onTap: () => _showLanguageDialog(),
-        ),
-        ListTile(
-          leading: const Icon(Icons.palette_outlined),
-          title: const Text('Theme'),
-          subtitle: Text(_selectedTheme),
-          trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-          onTap: () => _showThemeDialog(),
         ),
       ],
     );
@@ -346,14 +491,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: const Text('Cancel', style: TextStyle(inherit: true)),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
               _connectToFlowIQ();
             },
-            child: const Text('Connect'),
+            child: const Text('Connect', style: TextStyle(inherit: true)),
           ),
         ],
       ),
@@ -372,7 +517,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: const Text('Cancel', style: TextStyle(inherit: true)),
           ),
           TextButton(
             onPressed: () {
@@ -380,7 +525,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               _disconnectFromFlowIQ();
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Disconnect'),
+            child: const Text('Disconnect', style: TextStyle(inherit: true)),
           ),
         ],
       ),
@@ -445,7 +590,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: const Text('Cancel', style: TextStyle(inherit: true)),
           ),
           TextButton(
             onPressed: () {
@@ -453,7 +598,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               _deleteAllData();
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
+            child: const Text('Delete', style: TextStyle(inherit: true)),
           ),
         ],
       ),
@@ -625,11 +770,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               // Open full privacy policy document
               _showFullPrivacyPolicy();
             },
-            child: const Text('View Full Policy'),
+            child: const Text('View Full Policy', style: TextStyle(inherit: true)),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: const Text('Close', style: TextStyle(inherit: true)),
           ),
         ],
       ),
@@ -656,7 +801,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: const Text('Close', style: TextStyle(inherit: true)),
           ),
         ],
       ),
@@ -686,7 +831,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: const Text('Cancel', style: TextStyle(inherit: true)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -715,7 +860,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 }
               }
             },
-            child: const Text('Sign Out'),
+            child: const Text('Sign Out', style: TextStyle(inherit: true)),
           ),
         ],
       ),
@@ -733,7 +878,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: const Text('Cancel', style: TextStyle(inherit: true)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -766,7 +911,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 }
               }
             },
-            child: const Text('Delete Account'),
+            child: const Text('Delete Account', style: TextStyle(inherit: true)),
           ),
         ],
       ),

@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Flow Ai</string>
+	<string>Flow iQ</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>flow_ai</string>
+	<string>Flow iQ</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -48,32 +48,31 @@
 	
 	<!-- Health Kit Permissions -->
 	<key>NSHealthShareUsageDescription</key>
-	<string>Flow AI needs access to health data to track your menstrual cycle and provide personalized insights.</string>
+	<string>Flow iQ needs access to health data to track your menstrual cycle and provide personalized insights.</string>
 	<key>NSHealthUpdateUsageDescription</key>
-	<string>Flow AI needs to update your health data to save cycle information.</string>
+	<string>Flow iQ needs to update your health data to save cycle information.</string>
 	
 	<!-- Camera and Microphone Permissions -->
 	<key>NSCameraUsageDescription</key>
-	<string>Flow AI uses camera to scan and analyze health-related documents.</string>
+	<string>Flow iQ uses camera to scan and analyze health-related documents.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Flow AI uses microphone for voice input and symptom recording.</string>
+	<string>Flow iQ uses microphone for voice input and symptom recording.</string>
 	
 	<!-- Motion Permissions -->
 	<key>NSMotionUsageDescription</key>
-	<string>Flow AI tracks your physical activity to provide better health insights.</string>
+	<string>Flow iQ tracks your physical activity to provide better health insights.</string>
 	
 	<!-- Location Permission -->
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Flow AI uses location data to provide location-based health insights.</string>
+	<string>Flow iQ uses location data to provide location-based health insights.</string>
 	
 	<!-- Speech Recognition Permission -->
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Flow AI uses speech recognition for voice input and symptom logging.</string>
+	<string>Flow iQ uses speech recognition for voice input and symptom logging.</string>
 	
 	<!-- Notifications -->
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>background-fetch</string>
 		<string>remote-notification</string>
 	</array>
 	

@@ -644,15 +644,17 @@ class _FlowAIMetricCardState extends State<FlowAIMetricCard>
       onTap: widget.onTap,
       enableColorMorph: widget.enableColorMorph,
       morphColors: FlowAIVisualSystem.emotionalMorph,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
           // Header with icon and trend
           Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(10),  // Reduced from 12
                 decoration: BoxDecoration(
                   gradient: FlowAIVisualSystem.createFlowGradient(
                     widget.enableColorMorph ? _morphAnimation.value : 0,
@@ -667,20 +669,25 @@ class _FlowAIMetricCardState extends State<FlowAIMetricCard>
                 child: Icon(
                   widget.icon,
                   color: Colors.white,
-                  size: 20,
+                  size: 18,  // Reduced from 20
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 8),  // Reduced from 12
               Expanded(
                 child: Text(
                   widget.title,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
+                    fontSize: 14,  // Added explicit smaller size
                   ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                 ),
               ),
-              if (widget.trendDirection != null)
+              if (widget.trendDirection != null) ...[
+                const SizedBox(width: 4),
                 _buildTrendIndicator(),
+              ],
             ],
           ),
           
@@ -730,6 +737,7 @@ class _FlowAIMetricCardState extends State<FlowAIMetricCard>
             ),
           ],
         ],
+        ),
       ),
     );
   }

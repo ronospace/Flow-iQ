@@ -43,13 +43,13 @@ class EnhancedAuthService extends ChangeNotifier {
   }
   
   /// Sign in with email and password
-  Future<User> signInWithEmailAndPassword(String email, String password) async {
+  Future<User?> signInWithEmailAndPassword(String email, String password) async {
     try {
       // Development mode: bypass Firebase for demo account
       if (email == 'demo@flowiq.health' && password == 'FlowIQ2024Demo!') {
         debugPrint('✅ Development mode: Demo account bypass');
-        // Return success without Firebase
-        return Future.value(null as User);
+        // Return success without Firebase - navigation will proceed
+        return null;
       }
       
       final credential = await _auth.signInWithEmailAndPassword(
@@ -67,14 +67,14 @@ class EnhancedAuthService extends ChangeNotifier {
       // In development, allow bypass on internal errors
       if (e.code == 'internal-error' || e.code == 'api-key-invalid') {
         debugPrint('⚠️ Firebase error - Development mode bypass');
-        return Future.value(null as User);
+        return null;
       }
       throw _handleAuthException(e);
     }
   }
   
   /// Create user with email and password
-  Future<User> createUserWithEmailAndPassword(String email, String password) async {
+  Future<User?> createUserWithEmailAndPassword(String email, String password) async {
     try {
       final credential = await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -91,14 +91,14 @@ class EnhancedAuthService extends ChangeNotifier {
       // In development, allow bypass on internal errors
       if (e.code == 'internal-error' || e.code == 'api-key-invalid') {
         debugPrint('⚠️ Firebase error - Development mode bypass');
-        return Future.value(null as User);
+        return null;
       }
       throw _handleAuthException(e);
     }
   }
   
   /// Sign in with Apple
-  Future<User> signInWithApple() async {
+  Future<User?> signInWithApple() async {
     try {
       // Note: Requires additional setup with Sign in with Apple
       // This is a placeholder - implement with sign_in_with_apple package
@@ -110,7 +110,7 @@ class EnhancedAuthService extends ChangeNotifier {
   }
   
   /// Sign in with Google
-  Future<User> signInWithGoogle() async {
+  Future<User?> signInWithGoogle() async {
     try {
       // Note: Requires additional setup with Google Sign-In
       // This is a placeholder - implement with google_sign_in package

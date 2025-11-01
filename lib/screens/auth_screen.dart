@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../services/enhanced_auth_service.dart';
 import '../themes/flow_iq_visual_system.dart';
 
@@ -234,6 +235,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     Container(
                       width: 120,
                       height: 120,
+                      padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
@@ -250,10 +252,12 @@ class _AuthScreenState extends State<AuthScreen> {
                           ),
                         ],
                       ),
-                      child: const Icon(
-                        Icons.health_and_safety,
-                        size: 60,
-                        color: Colors.white,
+                      child: SvgPicture.asset(
+                        'assets/brands/flow_iq/icons/flow_iq_minimal.svg',
+                        colorFilter: const ColorFilter.mode(
+                          Colors.white,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
                     
