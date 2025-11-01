@@ -204,19 +204,19 @@ Thank you for using Flow iQ! We're committed to providing you with the best clin
 ## Support Information
 
 ### Support URL
-https://github.com/[your-username]/Flow-Ai
+https://github.com/ronospace/Flow-iQ
 
 ### Marketing URL
-https://github.com/[your-username]/Flow-Ai
+https://github.com/ronospace/Flow-iQ
 
 ### Privacy Policy URL
-https://[your-username].github.io/Flow-Ai/privacy-policy.html
+https://ronospace.github.io/Flow-iQ/privacy-policy.html
 
 ---
 
 ## Copyright
 
-© 2025 Flow iQ. All rights reserved.
+© 2025 ZyraFlow Inc.™ All rights reserved.
 
 ---
 
